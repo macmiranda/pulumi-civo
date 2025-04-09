@@ -8,7 +8,7 @@ import (
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		firewall, err := civo.NewFirewall(ctx, "civo-firewall", &civo.FirewallArgs{
-			Name:   pulumi.String("myFirstFirewall"),
+			Name:   pulumi.String("CivoFirewall"),
 			Region: pulumi.StringPtr("FRA1"),
 			// CreateDefaultRules: pulumi.BoolPtr(true),
 			IngressRules: civo.FirewallIngressRuleArray{
