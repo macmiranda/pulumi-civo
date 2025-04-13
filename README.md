@@ -31,7 +31,7 @@ This project creates the following infrastructure:
 2. **Civo Kubernetes Cluster**
    - Kubernetes version: 1.30.5-k3s1
    - CNI: Cilium
-   - Node size: g4s.kube.xsmall
+   - Node size: g4s.kube.small
    - Node count: 1
    - Region: FRA1
    - Pre-installed applications: metrics-server

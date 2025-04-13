@@ -47,7 +47,7 @@ func main() {
 			KubernetesVersion: pulumi.String("1.30.5-k3s1"),
 			Cni:               pulumi.String("cilium"),
 			Pools: civo.KubernetesClusterPoolsArgs{
-				Size:      pulumi.String("g4s.kube.xsmall"),
+				Size:      pulumi.String("g4s.kube.small"),
 				NodeCount: pulumi.Int(1),
 			},
 			Region:       pulumi.StringPtr("FRA1"),
