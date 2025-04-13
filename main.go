@@ -2,13 +2,15 @@ package main
 
 import (
 	"github.com/pulumi/pulumi-civo/sdk/v2/go/civo"
+	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
+	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/helm/v3"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
 		firewall, err := civo.NewFirewall(ctx, "civo-firewall", &civo.FirewallArgs{
-			Name:   pulumi.String("myFirstFirewall"),
+			Name:   pulumi.String("CivoFirewall"),
 			Region: pulumi.StringPtr("FRA1"),
 			// CreateDefaultRules: pulumi.BoolPtr(true),
 			IngressRules: civo.FirewallIngressRuleArray{
@@ -48,9 +50,38 @@ func main() {
 				Size:      pulumi.String("g4s.kube.xsmall"),
 				NodeCount: pulumi.Int(1),
 			},
-			Region:     pulumi.StringPtr("FRA1"),
-			FirewallId: firewall.ID(),
+			Region:       pulumi.StringPtr("FRA1"),
+			FirewallId:   firewall.ID(),
+			Applications: pulumi.StringPtr("traefik2-nodeport"),
 		})
+		if err != nil {
+			return err
+		}
+
+		// Create a Kubernetes provider instance using the cluster's kubeconfig
+		k8sProvider, err := kubernetes.NewProvider(ctx, "k8s-provider", &kubernetes.ProviderArgs{
+			Kubeconfig: cluster.Kubeconfig,
+		})
+		if err != nil {
+			return err
+		}
+
+		// Install Argo CD using Helm
+		_, err = helm.NewRelease(ctx, "argocd", &helm.ReleaseArgs{
+			Chart:     pulumi.String("argo-cd"),
+			Version:   pulumi.String("7.8.24"),
+			Namespace: pulumi.String("argocd"),
+			RepositoryOpts: &helm.RepositoryOptsArgs{
+				Repo: pulumi.String("https://argoproj.github.io/argo-helm"),
+			},
+			Values: pulumi.Map{
+				"server": pulumi.Map{
+					"service": pulumi.Map{
+						"type": pulumi.String("NodePort"),
+					},
+				},
+			},
+		}, pulumi.Provider(k8sProvider))
 		if err != nil {
 			return err
 		}
