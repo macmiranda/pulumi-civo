@@ -48,8 +48,9 @@ func main() {
 				Size:      pulumi.String("g4s.kube.xsmall"),
 				NodeCount: pulumi.Int(1),
 			},
-			Region:     pulumi.StringPtr("FRA1"),
-			FirewallId: firewall.ID(),
+			Region:       pulumi.StringPtr("FRA1"),
+			FirewallId:   firewall.ID(),
+			Applications: pulumi.StringPtr("argocd,tekton,traefik2-nodeport"),
 		})
 		if err != nil {
 			return err
