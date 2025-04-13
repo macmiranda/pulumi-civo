@@ -50,9 +50,8 @@ func main() {
 				Size:      pulumi.String("g4s.kube.xsmall"),
 				NodeCount: pulumi.Int(1),
 			},
-			Region:       pulumi.StringPtr("FRA1"),
-			FirewallId:   firewall.ID(),
-			Applications: pulumi.StringPtr("traefik2-nodeport"),
+			Region:     pulumi.StringPtr("FRA1"),
+			FirewallId: firewall.ID(),
 		})
 		if err != nil {
 			return err
@@ -74,6 +73,7 @@ func main() {
 			RepositoryOpts: &helm.RepositoryOptsArgs{
 				Repo: pulumi.String("https://argoproj.github.io/argo-helm"),
 			},
+			CreateNamespace: pulumi.Bool(true),
 			Values: pulumi.Map{
 				"server": pulumi.Map{
 					"service": pulumi.Map{
