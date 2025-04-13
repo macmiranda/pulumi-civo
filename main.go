@@ -74,6 +74,7 @@ func main() {
 			RepositoryOpts: &helm.RepositoryOptsArgs{
 				Repo: pulumi.String("https://argoproj.github.io/argo-helm"),
 			},
+			CreateNamespace: pulumi.Bool(true),
 			Values: pulumi.Map{
 				"server": pulumi.Map{
 					"service": pulumi.Map{
